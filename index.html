@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosa Nostra Empire - Idle Crime Game</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header class="top-bar">
+            <!-- Left Logo -->
+            <div class="header-logo">
+                <span class="logo-text">COSA NOSTRA</span>
+            </div>
+            
+            <!-- Right Controls -->
+            <div class="header-right">
+                <button id="prestige-btn" class="prestige-btn" disabled>
+                    Prestige
+                </button>
+                <div class="header-counters">
+                    <span>RESPECT </span><span id="respect-amount">0</span>
+                    <span class="separator"> · </span>
+                    <span>PRESTIGE </span><span id="prestige-level">0</span>
+                </div>
+                <button id="leaderboard-btn" class="trophy-btn">🏆</button>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <main class="game-main">
+            <!-- Offline Progress Modal -->
+            <div id="offline-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h2>Welcome Back, Boss</h2>
+                    <p id="offline-message">Your empire earned money while you were away.</p>
+                    <div class="offline-earnings">
+                        <span id="offline-earnings">$0</span>
+                    </div>
+                    <button id="collect-offline" class="btn btn-primary">Collect</button>
+                </div>
+            </div>
+
+            <!-- Business List -->
+            <div class="businesses-container">
+                <h2>Criminal Empire</h2>
+                <div id="businesses-list">
+                    <!-- Businesses will be dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Upgrades Panel -->
+            <div class="upgrades-container">
+                <h3>Empire Upgrades</h3>
+                <div id="upgrades-list">
+                    <!-- Upgrades will be dynamically generated -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Stats and Controls -->
+        <footer class="bottom-bar">
+            <div class="footer-inner">
+                <!-- Stats Icon -->
+                <button id="stats-btn" class="control-btn">📊</button>
+                
+                <!-- Save Icon -->
+                <button id="save-btn" class="control-btn">💾</button>
+                
+                <!-- Cash Metric -->
+                <div class="metric-item">
+                    <span class="stat-label">Cash</span>
+                    <span class="stat-value"><span id="current-money">$10</span></span>
+                </div>
+                
+                <!-- Spacer for gun -->
+                <div class="footer-spacer"></div>
+                
+                <!-- Total Earned Metric -->
+                <div class="metric-item">
+                    <span class="stat-label">Total Earned</span>
+                    <span class="stat-value">$<span id="total-earned">0</span></span>
+                </div>
+                
+                <!-- Trophy Icon -->
+                <button id="leaderboard-btn" class="control-btn">🏆</button>
+                
+                <!-- Settings Icon -->
+                <button id="settings-btn" class="control-btn">⚙️</button>
+            </div>
+            
+            <!-- Center Tap Button - positioned relative to full viewport -->
+            <div class="footer-tap-center">
+                <button id="tap-button" class="tap-button">
+                    <div class="tap-button-inner">
+                        <div class="tap-icon">🔫</div>
+                        <div class="tap-amount">+$<span id="tap-amount">1</span></div>
+                    </div>
+                    <div class="tap-ripple"></div>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/game.js"></script>
+    <script src="js/business.js"></script>
+    <script src="js/save.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/offline.js"></script>
+    <script src="js/leaderboard.js"></script>
+    
+    <script>
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            Game.init();
+        });
+    </script>
+</body>
+</html>

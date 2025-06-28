@@ -1,0 +1,997 @@
+/* Mafia Idle Game Styles - Updated for Tap Mechanic */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Oswald:wght@300;400;600;700&display=swap');
+
+/* CSS Variables for Theme */
+:root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3a3a3a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --accent-gold: #ffd700;
+    --accent-red: #8b0000;
+    --accent-green: #006400;
+    --border-color: #555555;
+    --shadow-dark: rgba(0, 0, 0, 0.8);
+    --tap-button-size: 96px;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Oswald', sans-serif;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+.game-container {
+    max-width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 70px; /* Space for footer only */
+}
+
+/* Header Styles */
+.top-bar {
+    background: var(--bg-secondary);
+    padding: 0 1rem;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--accent-gold);
+    box-shadow: 0 2px 10px var(--shadow-dark);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+/* Header Logo */
+.header-logo {
+    padding-left: 16px;
+}
+
+.logo-text {
+    color: var(--accent-gold);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+}
+
+
+.income-display {
+    font-size: 0.9rem;
+    color: var(--accent-gold);
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+/* Header Right Section */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-counters {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-family: var(--font-heading);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-counters #respect-amount,
+.header-counters #prestige-level {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.separator {
+    opacity: 0.6;
+}
+
+.trophy-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-gold);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-gold);
+}
+
+.trophy-btn:hover {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    transform: translateY(-2px);
+}
+
+.income-display .label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#income-per-second {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+}
+
+.prestige-btn {
+    background: linear-gradient(45deg, var(--accent-red), #a00000);
+    color: var(--text-primary);
+    border: 2px solid var(--accent-gold);
+    padding: 0.5rem 1rem;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: normal;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.prestige-btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #a00000, var(--accent-red));
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.prestige-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Main Game Area */
+.game-main {
+    flex: 1;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.businesses-container, .upgrades-container {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px var(--shadow-dark);
+}
+
+.businesses-container h2, .upgrades-container h3 {
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: normal;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+    font-size: 1.5rem;
+}
+
+/* Business Cards */
+.business-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: visible; /* Allow popups to show outside card */
+}
+
+.business-card:hover {
+    border-color: var(--accent-gold);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.business-card.locked {
+    opacity: 0.6;
+    background: linear-gradient(45deg, var(--bg-tertiary), #2a2a2a);
+}
+
+.business-card.locked::before {
+    content: "🔒";
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.business-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.business-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    letter-spacing: normal;
+}
+
+.business-count {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.unlock-requirement {
+    color: var(--accent-red);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.business-info {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    color: var(--text-secondary);
+}
+
+.business-description {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+.business-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-primary {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #ffed4e;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: var(--border-color);
+    border-color: var(--accent-gold);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Upgrade Cards */
+.upgrade-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.upgrade-card:hover {
+    border-color: var(--accent-gold);
+}
+
+.upgrade-card.purchased {
+    opacity: 0.8;
+    border-color: var(--accent-green);
+    background: linear-gradient(45deg, var(--bg-tertiary), rgba(0, 100, 0, 0.1));
+}
+
+.upgrade-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-family: var(--font-heading);
+    letter-spacing: normal;
+}
+
+.upgrade-description {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.upgrade-cost {
+    color: var(--accent-gold);
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.purchased-badge {
+    color: var(--accent-green);
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5rem;
+    background: rgba(0, 100, 0, 0.2);
+    border-radius: 4px;
+}
+
+/* Central Tap Button in Footer */
+
+.tap-button {
+    width: var(--tap-button-size);
+    height: var(--tap-button-size);
+    border: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-gold), #b8860b);
+    border: 4px solid var(--accent-gold);
+    box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.5),
+        0 8px 25px var(--shadow-dark),
+        inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    top: -32px;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0; /* Prevent shrinking */
+    z-index: 101; /* Above footer */
+}
+
+.tap-button:active {
+    transform: scale(0.95);
+    box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.8),
+        0 4px 15px var(--shadow-dark),
+        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+}
+
+.tap-button-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.tap-icon {
+    font-size: 2rem;
+    margin-bottom: 0.1rem;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
+}
+
+.tap-amount {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--bg-primary);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tap-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.tap-ripple.animate {
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    to {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+    }
+}
+
+/* Bottom Bar */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--accent-gold);
+    padding: 0 24px;
+    z-index: 100;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+/* Footer inner wrapper with locked max-width */
+.footer-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    z-index: 99; /* Below gun */
+}
+
+/* Footer spacer for gun overlap prevention */
+.footer-spacer {
+    width: 120px; /* Gun diameter + glow */
+    flex-shrink: 0; /* Maintains width */
+    height: 1px; /* Invisible */
+}
+
+/* Tap Button Container - absolutely positioned at exact center */
+.footer-tap-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 101;
+    pointer-events: none;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+.footer-tap-center .tap-button {
+    pointer-events: all;
+}
+
+.stat-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: normal;
+    line-height: 1;
+    margin-bottom: 2px;
+    font-family: var(--font-heading);
+    font-weight: 400;
+}
+
+.stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--accent-gold);
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+    line-height: 1;
+    align-self: center;
+}
+
+/* Special styling for cash amount in footer */
+.metric-item .stat-value #current-money {
+    color: #3aff7a;
+    text-shadow: 
+        0 0 8px rgba(58, 255, 122, 0.6),
+        0 0 16px rgba(58, 255, 122, 0.3);
+}
+
+/* Footer section spacing - Legacy styles removed */
+
+.control-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.control-btn:hover {
+    background: var(--border-color);
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 2px solid var(--accent-gold);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-content h2 {
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+.offline-earnings {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-gold);
+    margin: 1rem 0;
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+}
+
+/* Animations */
+@keyframes moneyGain {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.money-animation {
+    animation: moneyGain 0.3s ease-in-out;
+}
+
+/* Income Popup Animations */
+@keyframes incomePopup {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px) scale(0.9);
+        opacity: 0;
+    }
+}
+
+@keyframes incomePopupMobile {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-35px) scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* Tap Button Popup Animations */
+@keyframes tapPopup {
+    0% {
+        transform: translateY(-20px) translateX(-50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-80px) translateX(-50%) scale(0.9);
+        opacity: 0;
+    }
+}
+
+@keyframes tapPopupMobile {
+    0% {
+        transform: translateY(-15px) translateX(-50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-75px) translateX(-50%) scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* Critical Hit Effects */
+@keyframes critShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+@keyframes critGlow {
+    0% {
+        box-shadow: 
+            0 0 20px rgba(255, 215, 0, 0.5),
+            0 8px 25px var(--shadow-dark),
+            inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(255, 215, 0, 0.9),
+            0 0 50px rgba(255, 165, 0, 0.6),
+            0 8px 25px var(--shadow-dark),
+            inset 0 2px 10px rgba(255, 255, 255, 0.4);
+    }
+    100% {
+        box-shadow: 
+            0 0 20px rgba(255, 215, 0, 0.5),
+            0 8px 25px var(--shadow-dark),
+            inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Income Popup Styles */
+.income-popup {
+    position: absolute;
+    pointer-events: none; /* Don't block clicks */
+    font-family: var(--font-body);
+    font-weight: bold;
+    font-size: 1.25rem; /* Increased by 25% */
+    color: #3aff7a;
+    text-shadow: 
+        0 0 8px rgba(58, 255, 122, 0.6),
+        0 0 16px rgba(58, 255, 122, 0.3);
+    z-index: 50;
+    animation: incomePopup 1s ease-out forwards;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Tap Popup Styles */
+.tap-popup {
+    position: absolute;
+    pointer-events: none;
+    font-family: var(--font-body);
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #3aff7a;
+    text-shadow: 
+        0 0 8px rgba(58, 255, 122, 0.6),
+        0 0 16px rgba(58, 255, 122, 0.3);
+    z-index: 102; /* Above tap button */
+    animation: tapPopup 1.2s ease-out forwards;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.tap-popup.critical {
+    color: #ffd54a;
+    font-size: 1.6rem;
+    text-shadow: 
+        0 0 10px rgba(255, 213, 74, 0.8),
+        0 0 20px rgba(255, 165, 0, 0.5);
+}
+
+.tap-popup.critical::after {
+    content: " CRIT!";
+    font-size: 0.8rem;
+    color: #ff6b35;
+    text-shadow: 
+        0 0 8px rgba(255, 107, 53, 0.8),
+        0 0 16px rgba(255, 107, 53, 0.4);
+    margin-left: 0.3rem;
+}
+
+/* Critical hit button effects */
+.tap-button.crit-shake {
+    animation: critShake 0.3s ease-in-out;
+}
+
+.tap-button.crit-glow {
+    animation: critGlow 0.5s ease-in-out;
+}
+
+@keyframes tapPulse {
+    0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 8px 25px var(--shadow-dark); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 8px 25px var(--shadow-dark); }
+    100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 8px 25px var(--shadow-dark); }
+}
+
+.tap-button.pulse {
+    animation: tapPulse 0.5s ease-in-out;
+}
+
+/* Loading and Error States */
+.loading {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+}
+
+.error {
+    color: var(--accent-red);
+    text-align: center;
+    padding: 1rem;
+    background: rgba(139, 0, 0, 0.1);
+    border: 1px solid var(--accent-red);
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .game-container {
+        padding-bottom: 84px; /* Footer space only */
+    }
+    
+    .game-main {
+        grid-template-columns: 2fr 1fr;
+        padding: 2rem;
+    }
+    
+    .top-bar {
+        padding: 0.75rem 1rem;
+    }
+    
+    #income-per-second {
+        font-size: 1.5rem;
+    }
+    
+    .businesses-container h2, .upgrades-container h3 {
+        font-size: 1.8rem;
+    }
+    
+    :root {
+        --tap-button-size: 96px;
+    }
+    
+    .tap-icon {
+        font-size: 2.2rem;
+    }
+    
+    .tap-amount {
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .game-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 140px; /* Footer space only */
+    }
+    
+    :root {
+        --tap-button-size: 96px;
+    }
+    
+    .tap-icon {
+        font-size: 2.5rem;
+    }
+    
+    .tap-amount {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding-bottom: 78px; /* Mobile footer space only */
+    }
+    
+    .game-main {
+        padding: 0.5rem;
+    }
+    
+    .businesses-container, .upgrades-container {
+        padding: 0.75rem;
+    }
+    
+    .business-card {
+        padding: 0.75rem;
+    }
+    
+    .business-controls {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+    
+    :root {
+        --tap-button-size: 96px;
+    }
+    
+    .tap-icon {
+        font-size: 1.8rem;
+    }
+    
+    .tap-amount {
+        font-size: 0.65rem;
+    }
+    
+    .bottom-bar {
+        padding: 0 12px; /* Reduced gap for mobile */
+        height: 70px;
+        overflow: visible;
+    }
+    
+    .footer-inner {
+        gap: 12px; /* Reduced gap for mobile */
+    }
+    
+    .footer-spacer {
+        width: 96px; /* Reduced for mobile fit */
+    }
+    
+    .metric-item {
+        min-width: 50px;
+    }
+    
+    .control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        min-width: 32px;
+        min-height: 32px;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .stat-value {
+        font-size: 16px; /* Slightly smaller on mobile but still prominent */
+    }
+    
+    .tap-button {
+        top: -28px; /* Slightly less overlap on mobile */
+    }
+    
+    .income-popup {
+        font-size: 1.02rem; /* Increased by ~20% from 0.85rem */
+        animation: incomePopupMobile 1s ease-out forwards;
+    }
+    
+    .tap-popup {
+        font-size: 1.2rem;
+        animation: tapPopupMobile 1.2s ease-out forwards;
+    }
+    
+    .tap-popup.critical {
+        font-size: 1.4rem;
+    }
+    
+    /* Header responsive adjustments */
+    .top-bar {
+        height: 56px;
+        padding: 0 0.5rem;
+    }
+    
+    .header-logo {
+        padding-left: 8px;
+    }
+    
+    .logo-text {
+        font-size: 1rem;
+    }
+    
+    .income-display {
+        font-size: 0.8rem;
+    }
+    
+    .header-right {
+        gap: 0.5rem;
+    }
+    
+    .header-counters {
+        font-size: 0.65rem;
+    }
+    
+    .prestige-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .trophy-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+}
