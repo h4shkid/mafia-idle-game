@@ -1,76 +1,86 @@
 // Business System Management - Updated for Auto-Income with Stable DOM
 const BusinessSystem = {
-    // Business types with updated stats for automatic income
+    // Business types with rebalanced stats for smoother progression
     businessTypes: {
         protection_racket: {
             name: "Protection Racket",
             baseCost: 50,
-            baseIncome: 1,
-            incomeInterval: 2000, // 2 seconds
-            costMultiplier: 1.15,
+            baseIncome: 0.8,
+            incomeInterval: 1000, // 1 second for 0.8/sec
+            costMultiplier: 1.12,
             description: "Classic neighborhood protection scheme",
             icon: "🏪",
             unlockCost: 0
         },
+        numbers_parlor: {
+            name: "Numbers Parlor",
+            baseCost: 350,
+            baseIncome: 4,
+            incomeInterval: 1000, // 1 second for 4/sec
+            costMultiplier: 1.13,
+            description: "Neighborhood betting operation",
+            icon: "🎲",
+            unlockCost: 150
+        },
         underground_casino: {
             name: "Underground Casino",
-            baseCost: 500,
-            baseIncome: 5,
-            incomeInterval: 3000, // 3 seconds
-            costMultiplier: 1.15,
+            baseCost: 2000,
+            baseIncome: 15,
+            incomeInterval: 1000, // 1 second for 15/sec
+            costMultiplier: 1.14,
             description: "High-stakes gambling den",
             icon: "🎰",
-            unlockCost: 100
+            unlockCost: 750
         },
         smuggling_operation: {
             name: "Smuggling Operation",
-            baseCost: 2500,
-            baseIncome: 25,
-            incomeInterval: 4000, // 4 seconds
+            baseCost: 10000,
+            baseIncome: 60,
+            incomeInterval: 1000, // 1 second for 60/sec
             costMultiplier: 1.15,
             description: "Moving goods across borders",
             icon: "🚢",
-            unlockCost: 1000
+            unlockCost: 4000
         },
         construction_consulting: {
             name: "Construction Consulting",
-            baseCost: 12500,
-            baseIncome: 125,
-            incomeInterval: 6000, // 6 seconds
-            costMultiplier: 1.15,
+            baseCost: 60000,
+            baseIncome: 300,
+            incomeInterval: 1000, // 1 second for 300/sec
+            costMultiplier: 1.16,
             description: "Legitimate construction with benefits",
             icon: "🏗️",
-            unlockCost: 10000
+            unlockCost: 25000
         },
         waste_management: {
             name: "Waste Management",
-            baseCost: 60000,
-            baseIncome: 600,
-            incomeInterval: 8000, // 8 seconds
-            costMultiplier: 1.15,
+            baseCost: 300000,
+            baseIncome: 1200,
+            incomeInterval: 1000, // 1 second for 1200/sec
+            costMultiplier: 1.17,
             description: "Making things disappear",
             icon: "🚛",
-            unlockCost: 75000
+            unlockCost: 120000
         },
         real_estate: {
             name: "Real Estate Development",
-            baseCost: 300000,
-            baseIncome: 3000,
-            incomeInterval: 12000, // 12 seconds
-            costMultiplier: 1.15,
+            baseCost: 1500000,
+            baseIncome: 5000,
+            incomeInterval: 1000, // 1 second for 5000/sec
+            costMultiplier: 1.18,
             description: "Prime property acquisition",
             icon: "🏢",
-            unlockCost: 500000
+            unlockCost: 600000
         },
         political_influence: {
             name: "Political Influence",
-            baseCost: 1500000,
-            baseIncome: 15000,
-            incomeInterval: 20000, // 20 seconds
-            costMultiplier: 1.15,
+            baseCost: 8000000,
+            baseIncome: 20000,
+            incomeInterval: 1000, // 1 second for 20000/sec
+            costMultiplier: 1.19,
             description: "Friends in high places",
             icon: "🎩",
-            unlockCost: 2500000
+            unlockCost: 3000000
         }
     },
 
@@ -82,55 +92,63 @@ const BusinessSystem = {
         protection_umbrella: {
             name: "Premium Protection",
             description: "Triple income from Protection Rackets",
-            cost: 1000,
+            cost: 200, // 4x base cost of 50
             multiplier: 3,
             businessType: "protection_racket",
             purchased: false
         },
+        numbers_network: {
+            name: "Numbers Network",
+            description: "Triple income from Numbers Parlors",
+            cost: 1400, // 4x base cost of 350
+            multiplier: 3,
+            businessType: "numbers_parlor",
+            purchased: false
+        },
         lucky_dice: {
             name: "Lucky Dice",
-            description: "Double income from Underground Casinos",
-            cost: 5000,
-            multiplier: 2,
+            description: "Triple income from Underground Casinos",
+            cost: 8000, // 4x base cost of 2000
+            multiplier: 3,
             businessType: "underground_casino",
             purchased: false
         },
         fast_boats: {
             name: "Fast Boats",
             description: "Triple income from Smuggling Operations",
-            cost: 25000,
+            cost: 40000, // 4x base cost of 10000
             multiplier: 3,
             businessType: "smuggling_operation",
             purchased: false
         },
         insider_contracts: {
             name: "Insider Contracts",
-            description: "Double income from Construction Consulting",
-            cost: 125000,
-            multiplier: 2,
+            description: "Triple income from Construction Consulting",
+            cost: 240000, // 4x base cost of 60000
+            multiplier: 3,
             businessType: "construction_consulting",
             purchased: false
         },
         advanced_disposal: {
             name: "Advanced Disposal",
             description: "Triple income from Waste Management",
-            cost: 600000,
+            cost: 1200000, // 4x base cost of 300000
             multiplier: 3,
             businessType: "waste_management",
             purchased: false
         },
         prime_locations: {
             name: "Prime Locations",
-            description: "Double income from Real Estate",
-            cost: 3000000,
-            multiplier: 2,
+            description: "Triple income from Real Estate",
+            cost: 6000000, // 4x base cost of 1500000
+            multiplier: 3,
             businessType: "real_estate",
             purchased: false
         },
         global_network: {
             name: "Global Network",
             description: "Triple income from Political Influence",
-            cost: 15000000,
+            cost: 32000000, // 4x base cost of 8000000
             multiplier: 3,
             businessType: "political_influence",
             purchased: false
@@ -149,7 +167,9 @@ const BusinessSystem = {
 
     // Initialize business system
     init() {
-        // Initialize businesses if not loaded
+        // Initialize businesses if not loaded or migrate old data
+        this.migrateBusinessData();
+        
         if (Object.keys(this.businesses).length === 0) {
             Object.keys(this.businessTypes).forEach(type => {
                 this.businesses[type] = {
@@ -163,6 +183,25 @@ const BusinessSystem = {
         this.createBusinessDisplay();
         this.createUpgradesDisplay();
         this.startIncomeTimers();
+    },
+
+    // Migrate old business data to new structure
+    migrateBusinessData() {
+        // Check if we have new business types that don't exist in save data
+        Object.keys(this.businessTypes).forEach(type => {
+            if (!this.businesses[type]) {
+                this.businesses[type] = {
+                    count: 0,
+                    level: 0,
+                    lastIncome: Date.now()
+                };
+            }
+        });
+
+        // Reset all upgrade purchases for rebalance
+        Object.keys(this.upgrades).forEach(upgradeId => {
+            this.upgrades[upgradeId].purchased = false;
+        });
     },
 
     // Calculate current cost for a business
@@ -179,8 +218,8 @@ const BusinessSystem = {
         
         let income = type.baseIncome;
         
-        // Apply level multipliers (20% per level)
-        income *= (1 + business.level * 0.2);
+        // Apply level multipliers (25% per level)
+        income *= (1 + business.level * 0.25);
         
         // Apply upgrade multipliers
         Object.values(this.upgrades).forEach(upgrade => {
@@ -260,7 +299,7 @@ const BusinessSystem = {
     getUpgradeCost(businessType) {
         const business = this.businesses[businessType];
         const type = this.businessTypes[businessType];
-        return Math.floor(type.baseCost * Math.pow(1.5, business.level) * 0.5);
+        return Math.floor(type.baseCost * Math.pow(1.35, business.level) * 0.6);
     },
 
     // Start income timer for a specific business

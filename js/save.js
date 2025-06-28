@@ -9,7 +9,7 @@ const SaveSystem = {
                 gameState: Game.state,
                 businesses: BusinessSystem.businesses,
                 upgrades: BusinessSystem.upgrades,
-                version: '1.0.0',
+                version: '2.1.0', // Prestige rebalance version
                 saveTime: Date.now()
             };
             
@@ -40,6 +40,20 @@ const SaveSystem = {
             
             const saveData = JSON.parse(saveString);
             
+            // Check version compatibility and migrate if needed
+            if (!saveData.version || saveData.version === '1.0.0') {
+                console.warn('Save data is from old version, resetting for rebalance');
+                localStorage.removeItem(this.SAVE_KEY);
+                Game.showNotification('Game reset for rebalance - sorry for the inconvenience!');
+                return false;
+            } else if (saveData.version === '2.0.0') {
+                // Migrate from 2.0.0 to 2.1.0 (prestige rebalance)
+                console.log('Migrating save data from 2.0.0 to 2.1.0');
+                Game.showNotification('Prestige system rebalanced - bonuses recalculated!');
+                // No data reset needed, just formula change
+                saveData.version = '2.1.0';
+            }
+            
             // Validate save data
             if (!this.validateSave(saveData)) {
                 console.warn('Save data is invalid, starting new game');
@@ -49,9 +63,9 @@ const SaveSystem = {
             // Load game state
             if (saveData.gameState) {
                 Object.assign(Game.state, saveData.gameState);
-                // Ensure tapPower exists for backward compatibility
+                // Ensure new properties exist
                 if (typeof Game.state.tapPower === 'undefined') {
-                    Game.state.tapPower = 1;
+                    Game.state.tapPower = 2;
                 }
             }
             
@@ -124,7 +138,7 @@ const SaveSystem = {
                 gameState: Game.state,
                 businesses: BusinessSystem.businesses,
                 upgrades: BusinessSystem.upgrades,
-                version: '1.0.0',
+                version: '2.1.0', // Prestige rebalance version
                 saveTime: Date.now()
             };
             

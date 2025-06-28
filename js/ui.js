@@ -60,6 +60,18 @@ const UI = {
         if (settingsBtn) {
             settingsBtn.addEventListener('click', () => this.showSettingsModal());
         }
+
+        // Tap upgrade badge
+        const tapUpgradeBadge = document.getElementById('tap-upgrade-badge');
+        if (tapUpgradeBadge) {
+            tapUpgradeBadge.addEventListener('click', () => {
+                const upgradeCost = Game.getTapUpgradeCost();
+                if (Game.canAfford(upgradeCost)) {
+                    Game.upgradeTapPower();
+                    this.updateTapUpgradeButton(); // Immediately reevaluate visibility
+                }
+            });
+        }
         
         // Close modal when clicking outside
         document.addEventListener('click', (e) => {
@@ -90,6 +102,13 @@ const UI = {
                 e.preventDefault();
                 Game.handleTap();
             }
+
+            // U for tap upgrade
+            if (e.key === 'u' || e.key === 'U') {
+                e.preventDefault();
+                Game.upgradeTapPower();
+                this.updateTapUpgradeButton();
+            }
         });
         
         // Offline modal close
@@ -110,6 +129,7 @@ const UI = {
         this.updateIncomeDisplay();
         this.updateStatsDisplay();
         this.updateTapButton();
+        this.updateTapUpgradeButton();
         
         // Update business and upgrade displays (less frequently)
         BusinessSystem.updateBusinessDisplay();
@@ -164,6 +184,24 @@ const UI = {
         if (tapAmountElement) {
             const tapIncome = Game.getTapIncome();
             tapAmountElement.textContent = Game.formatNumber(tapIncome);
+        }
+    },
+
+    // Update tap upgrade button
+    updateTapUpgradeButton() {
+        const tapUpgradeBadge = document.getElementById('tap-upgrade-badge');
+        if (tapUpgradeBadge) {
+            const upgradeCost = Game.getTapUpgradeCost();
+            const canAfford = Game.canAfford(upgradeCost);
+            
+            // Update tooltip
+            tapUpgradeBadge.title = `Upgrade tap - cost ${Game.formatMoney(upgradeCost)}`;
+            
+            // Conditional visibility: show only when affordable
+            tapUpgradeBadge.style.display = canAfford ? 'block' : 'none';
+            
+            // Alternative: keep visible but disabled
+            // tapUpgradeBadge.classList.toggle('disabled', !canAfford);
         }
     },
     
@@ -234,9 +272,6 @@ const UI = {
                     ` : ''}
                 </div>
                 <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                    <button class="btn btn-secondary" onclick="Game.upgradeTapPower(); this.parentElement.parentElement.parentElement.remove();">
-                        Upgrade Tap (${Game.formatMoney(stats.tapUpgradeCost)})
-                    </button>
                     <button class="btn btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">Close</button>
                 </div>
             </div>

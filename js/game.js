@@ -2,12 +2,12 @@
 const Game = {
     // Game state
     state: {
-        money: 10,
+        money: 50,
         totalEarned: 0,
         prestigeLevel: 0,
         respectPoints: 0,
         lastSave: Date.now(),
-        tapPower: 1, // Base tap income
+        tapPower: 2, // Base tap income
         settings: {
             sound: true,
             notifications: true
@@ -18,12 +18,14 @@ const Game = {
     constants: {
         SAVE_INTERVAL: 5000, // Auto-save every 5 seconds
         UI_UPDATE_INTERVAL: 500,  // UI update every 500ms (reduced frequency)
-        PRESTIGE_THRESHOLD: 1000000, // $1M for first prestige
-        RESPECT_RATIO: 0.001, // 1 respect per $1000 earned
+        PRESTIGE_THRESHOLD: 500000, // $500K for first prestige
+        RESPECT_RATIO: 0.002, // 0.2% of total earned
         TAP_POWER_UPGRADE_COST: 50, // Cost for first tap upgrade
-        CRITICAL_HIT_CHANCE: 0.2, // 20% chance for critical hits
-        CRITICAL_MIN_MULTIPLIER: 5, // Minimum critical multiplier
-        CRITICAL_MAX_MULTIPLIER: 13 // Maximum critical multiplier
+        TAP_UPGRADE_MULTIPLIER: 1.6, // Cost growth multiplier
+        CRITICAL_HIT_CHANCE: 0.15, // 15% chance for critical hits
+        CRITICAL_MIN_MULTIPLIER: 6, // Minimum critical multiplier
+        CRITICAL_MAX_MULTIPLIER: 10, // Maximum critical multiplier
+        TAP_PASSIVE_SCALING: 0.08 // Tap income scales with passive income
     },
 
     // Tap popup management
@@ -111,7 +113,7 @@ const Game = {
         income *= this.getPrestigeMultiplier();
         
         // Apply business-based multipliers (tap income scales with business income)
-        const businessMultiplier = Math.max(1, BusinessSystem.getTotalIncomePerSecond() * 0.1);
+        const businessMultiplier = Math.max(1, BusinessSystem.getTotalIncomePerSecond() * this.constants.TAP_PASSIVE_SCALING);
         income *= businessMultiplier;
         
         return Math.floor(income);
@@ -228,7 +230,7 @@ const Game = {
 
     // Check if prestige is available
     checkPrestige() {
-        const threshold = this.constants.PRESTIGE_THRESHOLD * Math.pow(10, this.state.prestigeLevel);
+        const threshold = this.constants.PRESTIGE_THRESHOLD * Math.pow(7, this.state.prestigeLevel);
         const canPrestige = this.state.totalEarned >= threshold;
         
         const respectGain = Math.floor(this.state.totalEarned * this.constants.RESPECT_RATIO);
@@ -236,9 +238,15 @@ const Game = {
         const prestigeBtn = document.getElementById('prestige-btn');
         if (prestigeBtn) {
             prestigeBtn.disabled = !canPrestige;
-            prestigeBtn.textContent = canPrestige 
-                ? `Prestige (+${respectGain} Respect)`
-                : `Prestige`;
+            if (canPrestige) {
+                // Calculate new multiplier with gained respect
+                const newRespect = this.state.respectPoints + respectGain;
+                const newMultiplier = 1 + Math.sqrt(newRespect) * 0.02;
+                const bonusPercent = Math.round((newMultiplier - 1) * 100);
+                prestigeBtn.textContent = `Prestige (+${respectGain} Respect, ${bonusPercent}% bonus)`;
+            } else {
+                prestigeBtn.textContent = `Prestige`;
+            }
         }
     },
 
@@ -261,9 +269,9 @@ const Game = {
         this.state.prestigeLevel++;
         
         // Reset progress
-        this.state.money = 10;
+        this.state.money = 50;
         this.state.totalEarned = 0;
-        this.state.tapPower = 1;
+        this.state.tapPower = 2;
         
         // Reset businesses
         BusinessSystem.reset();
@@ -279,7 +287,12 @@ const Game = {
 
     // Get prestige multiplier
     getPrestigeMultiplier() {
-        return 1 + (this.state.respectPoints * 0.1); // 10% per respect point
+        return 1 + Math.sqrt(this.state.respectPoints) * 0.02; // Square root scaling
+    },
+
+    // Get prestige bonus percentage for display
+    getPrestigeBonusPercent() {
+        return Math.round((this.getPrestigeMultiplier() - 1) * 100);
     },
 
     // Upgrade tap power
@@ -302,7 +315,7 @@ const Game = {
 
     // Calculate tap upgrade cost
     getTapUpgradeCost() {
-        return Math.floor(this.constants.TAP_POWER_UPGRADE_COST * Math.pow(2, this.state.tapPower - 1));
+        return Math.floor(this.constants.TAP_POWER_UPGRADE_COST * Math.pow(this.constants.TAP_UPGRADE_MULTIPLIER, this.state.tapPower - 2));
     },
 
     // Format money for display
@@ -379,12 +392,12 @@ const Game = {
             
             // Reset state
             this.state = {
-                money: 10,
+                money: 50,
                 totalEarned: 0,
                 prestigeLevel: 0,
                 respectPoints: 0,
                 lastSave: Date.now(),
-                tapPower: 1,
+                tapPower: 2,
                 settings: {
                     sound: true,
                     notifications: true

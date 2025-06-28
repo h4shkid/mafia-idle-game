@@ -72,7 +72,7 @@
                 <!-- Cash Metric -->
                 <div class="metric-item">
                     <span class="stat-label">Cash</span>
-                    <span class="stat-value"><span id="current-money">$10</span></span>
+                    <span class="stat-value"><span id="current-money">$50</span></span>
                 </div>
                 
                 <!-- Spacer for gun -->
@@ -93,13 +93,19 @@
             
             <!-- Center Tap Button - positioned relative to full viewport -->
             <div class="footer-tap-center">
-                <button id="tap-button" class="tap-button">
-                    <div class="tap-button-inner">
-                        <div class="tap-icon">🔫</div>
-                        <div class="tap-amount">+$<span id="tap-amount">1</span></div>
-                    </div>
-                    <div class="tap-ripple"></div>
-                </button>
+                <div class="tap-button-container">
+                    <button id="tap-button" class="tap-button">
+                        <div class="tap-button-inner">
+                            <div class="tap-icon">🔫</div>
+                            <div class="tap-amount">+$<span id="tap-amount">2</span></div>
+                        </div>
+                        <div class="tap-ripple"></div>
+                    </button>
+                    <!-- Tap Upgrade Badge -->
+                    <button id="tap-upgrade-badge" class="tap-upgrade-badge" title="Upgrade tap power">
+                        +
+                    </button>
+                </div>
             </div>
         </footer>
     </div>

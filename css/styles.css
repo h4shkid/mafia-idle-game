@@ -502,6 +502,56 @@ body {
     height: 1px; /* Invisible */
 }
 
+/* Tap upgrade badge positioned on tommy gun */
+.tap-upgrade-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: #ffd940;
+    border: 2px solid #222;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--bg-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    box-shadow: 
+        0 0 8px rgba(255, 217, 64, 0.4),
+        0 2px 4px var(--shadow-dark);
+    line-height: 1;
+    pointer-events: auto;
+}
+
+.tap-upgrade-badge.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.tap-upgrade-badge:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ffed4e, var(--accent-gold));
+    box-shadow: 
+        0 0 12px rgba(255, 215, 0, 0.6),
+        0 4px 8px var(--shadow-dark);
+    transform: scale(1.1);
+}
+
+.tap-upgrade-badge:disabled {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: 
+        0 0 4px rgba(0, 0, 0, 0.3);
+    transform: none;
+}
+
 /* Tap Button Container - absolutely positioned at exact center */
 .footer-tap-center {
     position: absolute;
@@ -509,6 +559,13 @@ body {
     transform: translateX(-50%);
     z-index: 101;
     pointer-events: none;
+}
+
+/* Relative container for gun button and badge */
+.tap-button-container {
+    position: relative;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .metric-item {
@@ -918,6 +975,14 @@ body {
     
     .footer-spacer {
         width: 96px; /* Reduced for mobile fit */
+    }
+    
+    .tap-upgrade-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        top: -8px;
+        right: -8px;
     }
     
     .metric-item {
