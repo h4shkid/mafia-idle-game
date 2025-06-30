@@ -411,7 +411,19 @@ const BusinessSystem = {
         businessCard.innerHTML = `
             <div class="business-header">
                 <div class="business-name">${type.icon} ${type.name}</div>
-                <div class="business-count" id="count-${businessType}">0</div>
+                <div class="business-header-right">
+                    <div class="empire-upgrade-icon" id="empire-upgrade-icon-${businessType}" 
+                         aria-label="Purchase empire upgrade" tabindex="0" role="button">
+                        <span class="upgrade-icon-symbol">↑</span>
+                        <div class="empire-upgrade-tooltip" id="empire-tooltip-${businessType}">
+                            <div class="tooltip-name" id="tooltip-name-${businessType}"></div>
+                            <div class="tooltip-description" id="tooltip-description-${businessType}"></div>
+                            <div class="tooltip-cost" id="tooltip-cost-${businessType}"></div>
+                            <div class="tooltip-prerequisite" id="tooltip-prerequisite-${businessType}" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="business-count" id="count-${businessType}">0</div>
+                </div>
             </div>
             <div class="unlock-requirement" id="unlock-${businessType}" style="display: none;">
                 Unlock: ${Game.formatMoney(type.unlockCost)}
@@ -433,6 +445,7 @@ const BusinessSystem = {
                 </button>
                 <button class="btn btn-secondary upgrade-btn" id="upgrade-${businessType}">
                     Upgrade <span id="upgrade-cost-${businessType}">$0</span>
+                    <span class="upgrade-arrow-icon" id="upgrade-arrow-${businessType}">↑</span>
                 </button>
             </div>
         `;
@@ -440,11 +453,52 @@ const BusinessSystem = {
         // Add event listeners to stable buttons
         const buyBtn = businessCard.querySelector(`#buy-${businessType}`);
         const upgradeBtn = businessCard.querySelector(`#upgrade-${businessType}`);
+        const empireUpgradeIcon = businessCard.querySelector(`#empire-upgrade-icon-${businessType}`);
         
         buyBtn.addEventListener('click', () => this.buyBusiness(businessType));
         upgradeBtn.addEventListener('click', () => this.upgradeBusiness(businessType));
         
+        // Empire upgrade icon handlers
+        if (empireUpgradeIcon) {
+            // Desktop: hover to show tooltip, click to purchase
+            empireUpgradeIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleEmpireUpgradeClick(businessType);
+            });
+            
+            // Keyboard accessibility
+            empireUpgradeIcon.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.handleEmpireUpgradeClick(businessType);
+                }
+            });
+            
+            // Mobile: track touch state for tap-to-show, tap-to-buy behavior
+            let mobileTooltipVisible = false;
+            empireUpgradeIcon.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const tooltip = document.getElementById(`empire-tooltip-${businessType}`);
+                if (!mobileTooltipVisible && tooltip) {
+                    tooltip.classList.add('mobile-visible');
+                    mobileTooltipVisible = true;
+                    // Hide after 3 seconds if no second tap
+                    setTimeout(() => {
+                        if (mobileTooltipVisible) {
+                            tooltip.classList.remove('mobile-visible');
+                            mobileTooltipVisible = false;
+                        }
+                    }, 3000);
+                } else {
+                    this.handleEmpireUpgradeClick(businessType);
+                    tooltip.classList.remove('mobile-visible');
+                    mobileTooltipVisible = false;
+                }
+            });
+        }
+        
         this.updateBusinessCard(businessType);
+        this.updateEmpireUpgradeIcon(businessType);
         
         return businessCard;
     },
@@ -495,6 +549,7 @@ const BusinessSystem = {
     updateBusinessDisplay() {
         Object.keys(this.businessTypes).forEach(businessType => {
             this.updateBusinessCard(businessType);
+            this.updateEmpireUpgradeIcon(businessType);
         });
     },
 
@@ -688,5 +743,101 @@ const BusinessSystem = {
         setTimeout(() => {
             this.returnPopupToPool(popup);
         }, 1000);
+    },
+
+    // Find empire upgrade for a business type
+    getEmpireUpgradeForBusiness(businessType) {
+        return Object.keys(this.upgrades).find(upgradeId => 
+            this.upgrades[upgradeId].businessType === businessType
+        );
+    },
+
+    // Buy empire upgrade for a business
+    buyEmpireUpgrade(businessType) {
+        const upgradeId = this.getEmpireUpgradeForBusiness(businessType);
+        if (!upgradeId) return false;
+        
+        return this.buyUpgrade(upgradeId);
+    },
+
+    // Handle empire upgrade icon click/tap
+    handleEmpireUpgradeClick(businessType) {
+        const upgradeId = this.getEmpireUpgradeForBusiness(businessType);
+        if (!upgradeId) return;
+        
+        const upgrade = this.upgrades[upgradeId];
+        const business = this.businesses[businessType];
+        
+        // Check if upgrade is available and affordable
+        if (upgrade.purchased) {
+            Game.showNotification("Upgrade already purchased!");
+            return;
+        }
+        
+        if (business.count === 0) {
+            Game.showNotification(`Buy at least 1 ${this.businessTypes[businessType].name} first!`);
+            return;
+        }
+        
+        if (!Game.canAfford(upgrade.cost)) {
+            Game.showNotification("Not enough cash!");
+            return;
+        }
+        
+        // Purchase the upgrade
+        this.buyUpgrade(upgradeId);
+    },
+
+    // Update empire upgrade icon for a business
+    updateEmpireUpgradeIcon(businessType) {
+        const upgradeId = this.getEmpireUpgradeForBusiness(businessType);
+        if (!upgradeId) return;
+        
+        const upgrade = this.upgrades[upgradeId];
+        const business = this.businesses[businessType];
+        const upgradeIcon = document.getElementById(`empire-upgrade-icon-${businessType}`);
+        
+        if (!upgradeIcon) return;
+        
+        // Update tooltip content
+        const tooltipName = document.getElementById(`tooltip-name-${businessType}`);
+        const tooltipDescription = document.getElementById(`tooltip-description-${businessType}`);
+        const tooltipCost = document.getElementById(`tooltip-cost-${businessType}`);
+        const tooltipPrereq = document.getElementById(`tooltip-prerequisite-${businessType}`);
+        
+        if (tooltipName) tooltipName.textContent = upgrade.name;
+        if (tooltipDescription) tooltipDescription.textContent = upgrade.description;
+        if (tooltipCost) tooltipCost.textContent = Game.formatMoney(upgrade.cost);
+        
+        // Determine icon state
+        const canAfford = Game.canAfford(upgrade.cost);
+        const hasPrerequisites = business.count > 0;
+        const isAlreadyPurchased = upgrade.purchased;
+        
+        // Update icon appearance and visibility
+        if (isAlreadyPurchased) {
+            // Show green checkmark or hide completely
+            upgradeIcon.className = 'empire-upgrade-icon purchased';
+            upgradeIcon.querySelector('.upgrade-icon-symbol').textContent = '✓';
+            upgradeIcon.style.display = 'flex';
+            if (tooltipPrereq) tooltipPrereq.style.display = 'none';
+        } else {
+            upgradeIcon.style.display = 'flex';
+            upgradeIcon.querySelector('.upgrade-icon-symbol').textContent = '↑';
+            
+            if (!hasPrerequisites) {
+                upgradeIcon.className = 'empire-upgrade-icon disabled';
+                if (tooltipPrereq) {
+                    tooltipPrereq.textContent = `Prerequisite: Own at least 1 ${this.businessTypes[businessType].name}`;
+                    tooltipPrereq.style.display = 'block';
+                }
+            } else if (!canAfford) {
+                upgradeIcon.className = 'empire-upgrade-icon muted';
+                if (tooltipPrereq) tooltipPrereq.style.display = 'none';
+            } else {
+                upgradeIcon.className = 'empire-upgrade-icon available';
+                if (tooltipPrereq) tooltipPrereq.style.display = 'none';
+            }
+        }
     }
 };

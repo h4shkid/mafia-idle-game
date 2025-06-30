@@ -131,9 +131,8 @@ const UI = {
         this.updateTapButton();
         this.updateTapUpgradeButton();
         
-        // Update business and upgrade displays (less frequently)
+        // Update business displays (less frequently)
         BusinessSystem.updateBusinessDisplay();
-        BusinessSystem.updateUpgradesDisplay();
     },
     
     // Update only essential displays (for frequent updates)

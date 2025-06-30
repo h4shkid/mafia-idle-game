@@ -25,39 +25,62 @@
     box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+}
+
 body {
+    margin: 0;
+    padding: 0;
     font-family: var(--font-body);
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     min-height: 100vh;
     background-attachment: fixed;
     overflow-x: hidden;
+    width: 100%;
 }
 
 .game-container {
-    max-width: 100%;
+    width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     position: relative;
-    padding-bottom: 70px; /* Space for footer only */
+    padding-top: 60px; /* Account for fixed header */
+    padding-bottom: 70px;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 /* Header Styles */
 .top-bar {
     background: var(--bg-secondary);
-    padding: 0 1rem;
     height: 60px;
+    border-bottom: 2px solid var(--accent-gold);
+    box-shadow: 0 2px 10px var(--shadow-dark);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.top-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--accent-gold);
-    box-shadow: 0 2px 10px var(--shadow-dark);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    width: 100%;
 }
 
 /* Header Logo */
@@ -86,7 +109,8 @@ body {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
+    padding-right: 16px;
 }
 
 .header-counters {
@@ -179,15 +203,24 @@ body {
     margin-bottom: 2rem;
 }
 
-.businesses-container, .upgrades-container {
+.businesses-container {
     background: var(--bg-secondary);
     border-radius: 8px;
     padding: 1rem;
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 20px var(--shadow-dark);
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
-.businesses-container h2, .upgrades-container h3 {
+#businesses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.businesses-container h2 {
     color: var(--accent-gold);
     margin-bottom: 1rem;
     text-align: center;
@@ -205,10 +238,10 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 1rem;
-    margin-bottom: 1rem;
     transition: all 0.3s ease;
     position: relative;
-    overflow: visible; /* Allow popups to show outside card */
+    overflow: visible;
+    width: 100%;
 }
 
 .business-card:hover {
@@ -288,6 +321,151 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Business Header Layout */
+.business-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Empire Upgrade Icon */
+.empire-upgrade-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 2px solid;
+    font-size: 12px;
+    font-weight: bold;
+    outline: none;
+}
+
+.empire-upgrade-icon:focus {
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5);
+    outline: none;
+}
+
+/* Icon States */
+.empire-upgrade-icon.available {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: #ffffff;
+    backdrop-filter: blur(2px);
+}
+
+.empire-upgrade-icon.available:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+    border-color: #ffffff;
+}
+
+.empire-upgrade-icon.muted {
+    background: rgba(200, 200, 200, 0.1);
+    color: #cccccc;
+    border-color: #cccccc;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.empire-upgrade-icon.disabled {
+    background: rgba(150, 150, 150, 0.1);
+    color: #999999;
+    border-color: #999999;
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.empire-upgrade-icon.purchased {
+    background: var(--accent-green);
+    color: var(--text-primary);
+    border-color: var(--accent-green);
+    cursor: default;
+}
+
+.upgrade-icon-symbol {
+    line-height: 1;
+    font-size: inherit;
+}
+
+/* Compact Tooltip */
+.empire-upgrade-tooltip {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--accent-gold);
+    box-shadow: 0 4px 12px var(--shadow-dark);
+    font-size: 0.75rem;
+    line-height: 1.3;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    margin-top: 0.25rem;
+    pointer-events: none;
+    max-width: 200px;
+    white-space: normal;
+    text-align: left;
+    min-width: 160px;
+}
+
+.empire-upgrade-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    right: 8px;
+    border: 5px solid transparent;
+    border-bottom-color: var(--accent-gold);
+}
+
+.empire-upgrade-icon:hover .empire-upgrade-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile tooltip visibility */
+.empire-upgrade-tooltip.mobile-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tooltip-name {
+    color: var(--accent-gold);
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
+}
+
+.tooltip-description {
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    line-height: 1.3;
+}
+
+.tooltip-cost {
+    color: var(--accent-gold);
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+.tooltip-prerequisite {
+    color: var(--accent-red);
+    font-style: italic;
+    margin-top: 0.25rem;
+    font-size: 0.7rem;
 }
 
 .btn {
@@ -299,7 +477,7 @@ body {
     font-size: 0.85rem;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -308,6 +486,7 @@ body {
 .btn-primary {
     background: var(--accent-gold);
     color: var(--bg-primary);
+    transition: all 0.15s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -318,72 +497,62 @@ body {
 
 .btn-secondary {
     background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    color: #f0f0f0;
+    border: 2px solid var(--accent-gold);
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+    font-weight: bold;
+    transition: all 0.15s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: var(--border-color);
+    transform: scale(1.03);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    background: var(--bg-tertiary);
     border-color: var(--accent-gold);
 }
 
 .btn:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
 }
 
-/* Upgrade Cards */
-.upgrade-card {
+.btn-primary:disabled {
     background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-    transition: all 0.3s ease;
-}
-
-.upgrade-card:hover {
-    border-color: var(--accent-gold);
-}
-
-.upgrade-card.purchased {
-    opacity: 0.8;
-    border-color: var(--accent-green);
-    background: linear-gradient(45deg, var(--bg-tertiary), rgba(0, 100, 0, 0.1));
-}
-
-.upgrade-name {
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-    font-family: var(--font-heading);
-    letter-spacing: normal;
-}
-
-.upgrade-description {
-    font-size: 0.8rem;
     color: var(--text-secondary);
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
+    opacity: 0.5;
+    border: 1px solid var(--border-color);
 }
 
-.upgrade-cost {
-    color: var(--accent-gold);
-    font-weight: bold;
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
+.btn-secondary:disabled {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+    opacity: 0.5;
+    font-weight: 600;
 }
 
-.purchased-badge {
-    color: var(--accent-green);
-    font-weight: bold;
-    text-align: center;
-    padding: 0.5rem;
-    background: rgba(0, 100, 0, 0.2);
-    border-radius: 4px;
+.btn-secondary:disabled .upgrade-cost {
+    opacity: 0.7;
 }
+
+/* Upgrade Button Arrow Icon */
+.upgrade-arrow-icon {
+    color: #ffffff;
+    font-weight: bold;
+    margin-left: 8px;
+    opacity: 1;
+    transition: opacity 0.15s ease;
+    display: inline-block;
+    font-size: 0.9em;
+}
+
+.btn-secondary:disabled .upgrade-arrow-icon {
+    opacity: 0;
+    pointer-events: none;
+}
+
 
 /* Central Tap Button in Footer */
 
@@ -868,165 +1037,126 @@ body {
     margin: 1rem 0;
 }
 
-/* Responsive Design */
-@media (min-width: 768px) {
+/* Responsive Design System */
+
+/* Mobile First - Base styles for all devices */
+/* These apply to all screen sizes unless overridden */
+
+/* Mobile (<600px) - Phone-optimized layout */
+@media (max-width: 599px) {
     .game-container {
-        padding-bottom: 84px; /* Footer space only */
+        padding-top: 56px; /* Account for mobile header height */
+        padding-bottom: 78px;
+        width: 100%;
+        padding-left: 14px;
+        padding-right: 14px;
     }
     
     .game-main {
-        grid-template-columns: 2fr 1fr;
-        padding: 2rem;
+        padding: 0.5rem 0;
+        width: 100%;
     }
     
-    .top-bar {
-        padding: 0.75rem 1rem;
+    .businesses-container {
+        padding: 12px;
+        max-width: 100%;
+        margin: 0;
+        width: 100%;
     }
     
-    #income-per-second {
-        font-size: 1.5rem;
-    }
-    
-    .businesses-container h2, .upgrades-container h3 {
-        font-size: 1.8rem;
-    }
-    
-    :root {
-        --tap-button-size: 96px;
-    }
-    
-    .tap-icon {
-        font-size: 2.2rem;
-    }
-    
-    .tap-amount {
-        font-size: 0.8rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .game-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-bottom: 140px; /* Footer space only */
-    }
-    
-    :root {
-        --tap-button-size: 96px;
-    }
-    
-    .tap-icon {
-        font-size: 2.5rem;
-    }
-    
-    .tap-amount {
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .game-container {
-        padding-bottom: 78px; /* Mobile footer space only */
-    }
-    
-    .game-main {
-        padding: 0.5rem;
-    }
-    
-    .businesses-container, .upgrades-container {
-        padding: 0.75rem;
+    #businesses-list {
+        gap: 12px;
     }
     
     .business-card {
-        padding: 0.75rem;
+        padding: 12px;
+        width: 100%;
     }
     
+    /* Stack all buttons vertically on mobile */
     .business-controls {
         grid-template-columns: 1fr;
-        gap: 0.25rem;
+        gap: 8px;
+        width: 100%;
     }
     
-    .modal-content {
-        padding: 1.5rem;
-        margin: 0.5rem;
+    .btn {
+        width: 100%;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
     }
     
-    :root {
-        --tap-button-size: 96px;
+    /* Mobile button adjustments */
+    .btn-secondary:hover:not(:disabled) {
+        transform: scale(1.02); /* Slightly less scale on mobile */
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
     }
     
-    .tap-icon {
-        font-size: 1.8rem;
+    .upgrade-arrow-icon {
+        font-size: 0.8em; /* Slightly smaller on mobile */
+        margin-left: 6px;
     }
     
-    .tap-amount {
+    /* Mobile header element adjustments */
+    .business-name {
+        font-size: 0.85rem; /* Reduced by ~2pt */
+    }
+    
+    .business-count {
+        width: 24px;
+        height: 24px;
+        padding: 0.1rem 0.4rem;
+        font-size: 0.75rem;
+        min-width: 24px;
+    }
+    
+    .empire-upgrade-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+        margin-right: 4px; /* Nudge slightly left */
+    }
+    
+    
+    
+    .empire-upgrade-tooltip {
+        max-width: 180px;
+        min-width: 140px;
+        font-size: 0.7rem;
+        right: -20px; /* Adjust for smaller icon */
+    }
+    
+    .tooltip-name {
+        font-size: 0.75rem;
+    }
+    
+    .tooltip-description {
         font-size: 0.65rem;
     }
     
-    .bottom-bar {
-        padding: 0 12px; /* Reduced gap for mobile */
-        height: 70px;
-        overflow: visible;
+    .tooltip-cost {
+        font-size: 0.7rem;
     }
     
-    .footer-inner {
-        gap: 12px; /* Reduced gap for mobile */
-    }
-    
-    .footer-spacer {
-        width: 96px; /* Reduced for mobile fit */
-    }
-    
-    .tap-upgrade-badge {
-        width: 20px;
-        height: 20px;
-        font-size: 12px;
-        top: -8px;
-        right: -8px;
-    }
-    
-    .metric-item {
-        min-width: 50px;
-    }
-    
-    .control-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1rem;
-        min-width: 32px;
-        min-height: 32px;
-    }
-    
-    .stat-label {
-        font-size: 0.6rem;
-    }
-    
-    .stat-value {
-        font-size: 16px; /* Slightly smaller on mobile but still prominent */
-    }
-    
-    .tap-button {
-        top: -28px; /* Slightly less overlap on mobile */
-    }
-    
-    .income-popup {
-        font-size: 1.02rem; /* Increased by ~20% from 0.85rem */
-        animation: incomePopupMobile 1s ease-out forwards;
-    }
-    
-    .tap-popup {
-        font-size: 1.2rem;
-        animation: tapPopupMobile 1.2s ease-out forwards;
-    }
-    
-    .tap-popup.critical {
-        font-size: 1.4rem;
-    }
-    
-    /* Header responsive adjustments */
+    /* Mobile header adjustments */
     .top-bar {
         height: 56px;
-        padding: 0 0.5rem;
+    }
+    
+    .top-bar-inner {
+        padding: 0 12px;
+        overflow-x: hidden;
+    }
+    
+    .header-right {
+        white-space: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+    }
+    
+    .header-right::-webkit-scrollbar {
+        display: none; /* WebKit */
     }
     
     .header-logo {
@@ -1035,10 +1165,6 @@ body {
     
     .logo-text {
         font-size: 1rem;
-    }
-    
-    .income-display {
-        font-size: 0.8rem;
     }
     
     .header-right {
@@ -1058,5 +1184,211 @@ body {
         width: 32px;
         height: 32px;
         font-size: 1rem;
+    }
+    
+    /* Mobile footer adjustments */
+    .bottom-bar {
+        padding: 0 12px;
+        height: 70px;
+    }
+    
+    .footer-inner {
+        gap: 12px;
+    }
+    
+    .footer-spacer {
+        width: 96px;
+    }
+    
+    .tap-upgrade-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        top: -8px;
+        right: -8px;
+    }
+    
+    .metric-item {
+        min-width: 50px;
+    }
+    
+    .control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .stat-value {
+        font-size: 16px;
+    }
+    
+    .tap-button {
+        top: -28px;
+    }
+    
+    :root {
+        --tap-button-size: 80px;
+    }
+    
+    .tap-icon {
+        font-size: 1.8rem;
+    }
+    
+    .tap-amount {
+        font-size: 0.65rem;
+    }
+    
+    .income-popup {
+        font-size: 1.02rem;
+        animation: incomePopupMobile 1s ease-out forwards;
+    }
+    
+    .tap-popup {
+        font-size: 1.2rem;
+        animation: tapPopupMobile 1.2s ease-out forwards;
+    }
+    
+    .tap-popup.critical {
+        font-size: 1.4rem;
+    }
+}
+
+/* Extra narrow screens - wrap footer items */
+@media (max-width: 379px) {
+    .footer-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 8px;
+    }
+    
+    .metric-item {
+        min-width: 45px;
+        font-size: 0.8rem;
+    }
+    
+    .footer-spacer {
+        width: 80px;
+        order: 3;
+        flex-basis: 100%;
+    }
+    
+    /* Mobile modal adjustments */
+    .modal-content {
+        padding: 1.5rem;
+        margin: 0.5rem;
+        max-width: calc(100vw - 1rem);
+    }
+}
+
+/* Tablet (600px - 1199px) - 80% width with side padding */
+@media (min-width: 600px) and (max-width: 1199px) {
+    body {
+        font-size: 15px; /* Slightly reduced font size */
+    }
+    
+    .game-container {
+        padding-bottom: 84px;
+    }
+    
+    .game-main {
+        padding: 1.5rem 24px;
+    }
+    
+    .businesses-container {
+        max-width: 80%;
+        padding: 1.25rem;
+    }
+    
+    #businesses-list {
+        gap: 1.25rem;
+    }
+    
+    .business-card {
+        padding: 1.25rem;
+    }
+    
+    .business-controls {
+        gap: 0.4rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .top-bar-inner {
+        padding: 0 1rem;
+    }
+    
+    .businesses-container h2 {
+        font-size: 1.6rem;
+    }
+    
+    :root {
+        --tap-button-size: 90px;
+    }
+    
+    .tap-icon {
+        font-size: 2rem;
+    }
+    
+    .tap-amount {
+        font-size: 0.75rem;
+    }
+}
+
+/* Desktop (≥1200px) - Wide container with generous spacing */
+@media (min-width: 1200px) {
+    .game-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-bottom: 140px;
+    }
+    
+    .game-main {
+        padding: 2rem;
+    }
+    
+    .businesses-container {
+        max-width: 700px;
+        padding: 1.5rem;
+    }
+    
+    #businesses-list {
+        gap: 1.5rem; /* 20-24px spacing between cards */
+    }
+    
+    .business-card {
+        padding: 1.5rem;
+    }
+    
+    .business-controls {
+        gap: 0.5rem;
+    }
+    
+    .top-bar-inner {
+        padding: 0 1rem;
+    }
+    
+    #income-per-second {
+        font-size: 1.5rem;
+    }
+    
+    .businesses-container h2 {
+        font-size: 1.8rem;
+    }
+    
+    
+    :root {
+        --tap-button-size: 96px;
+    }
+    
+    .tap-icon {
+        font-size: 2.5rem;
+    }
+    
+    .tap-amount {
+        font-size: 0.9rem;
     }
 }

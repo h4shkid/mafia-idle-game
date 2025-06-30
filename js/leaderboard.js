@@ -255,17 +255,8 @@ const Leaderboard = {
     
     // Add leaderboard UI elements
     addLeaderboardUI() {
-        // Add leaderboard button to header
-        const header = document.querySelector('.top-bar');
-        if (header) {
-            const leaderboardBtn = document.createElement('button');
-            leaderboardBtn.className = 'btn btn-secondary';
-            leaderboardBtn.textContent = '🏆 Leaderboard';
-            leaderboardBtn.style.marginLeft = '1rem';
-            leaderboardBtn.onclick = () => this.showLeaderboard();
-            
-            header.appendChild(leaderboardBtn);
-        }
+        // Note: Leaderboard button removed from header to avoid duplication
+        // Leaderboard is accessible via footer button only
         
         // Add auto-submit on prestige
         const originalPrestige = Game.prestige;
